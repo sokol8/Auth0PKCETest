@@ -15,13 +15,13 @@ DerivedData
 !default.mode1v3
 *.mode2v3
 !default.perspectivev3
-xcuserdata
 
 ## Other
 *.xccheckout
 *.moved-aside
 *.xcuserstate
 *.xcscmblueprint
+xcuserdata/
 
 ## Obj-C/Swift specific
 *.hmap
@@ -38,23 +38,3 @@ Pods/
 Podfile.lock
 Podfile.lock.sfe
 
-# Carthage
-#
-# Add this line if you want to avoid checking in source code from Carthage dependencies.
-# Carthage/Checkouts
-
-Carthage/Build
-
-## Yanif's local scripts.
-stash.sh
-unstash.sh
-
-## Blackbox
-blackbox
-
-## Blackbox keyring
-/keyrings/live/pubring.gpg~
-/keyrings/live/pubring.kbx~
-/keyrings/live/secring.gpg
-/fastlane/.env
-SecureConstants.swift
