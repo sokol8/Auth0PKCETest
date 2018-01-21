@@ -16,6 +16,8 @@
 		0830B6142001254B0079F616 /* Auth0PKCETestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B6132001254B0079F616 /* Auth0PKCETestUITests.swift */; };
 		089A181B2013D18B00BA4ECC /* OAuthClientSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A181A2013D18B00BA4ECC /* OAuthClientSettings.swift */; };
 		089A181D2013D77400BA4ECC /* Auth0Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 089A181C2013D77400BA4ECC /* Auth0Settings.plist */; };
+		089A181F2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */; };
+		089A182620150DF500BA4ECC /* OMDDLogCustomFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */; };
 		61ADED7D1B873DE8BCDD0E3C /* Pods_Auth0PKCETest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0034BB34E7F3E30B9A4F757C /* Pods_Auth0PKCETest.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +56,8 @@
 		084B4155EC7E18423C7FB92E /* Pods-Auth0PKCETest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Auth0PKCETest.release.xcconfig"; path = "Pods/Target Support Files/Pods-Auth0PKCETest/Pods-Auth0PKCETest.release.xcconfig"; sourceTree = "<group>"; };
 		089A181A2013D18B00BA4ECC /* OAuthClientSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthClientSettings.swift; sourceTree = "<group>"; };
 		089A181C2013D77400BA4ECC /* Auth0Settings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Auth0Settings.plist; sourceTree = "<group>"; };
+		089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDebugStringConvertibleExtension.swift; sourceTree = "<group>"; };
+		089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OMDDLogCustomFormatter.swift; sourceTree = "<group>"; };
 		E218352899195896497F87C2 /* Pods-Auth0PKCETest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Auth0PKCETest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Auth0PKCETest/Pods-Auth0PKCETest.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -108,6 +112,7 @@
 		0830B5F22001254B0079F616 /* Auth0PKCETest */ = {
 			isa = PBXGroup;
 			children = (
+				089A182020150C2300BA4ECC /* DebugExtensions */,
 				089A18192013D0D000BA4ECC /* Auth */,
 				0830B5F32001254B0079F616 /* AppDelegate.swift */,
 				0830B5F52001254B0079F616 /* ViewController.swift */,
@@ -144,6 +149,15 @@
 				089A181A2013D18B00BA4ECC /* OAuthClientSettings.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		089A182020150C2300BA4ECC /* DebugExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */,
+				089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */,
+			);
+			path = DebugExtensions;
 			sourceTree = "<group>";
 		};
 		6977EFF63A11B7249ADEBB56 /* Frameworks */ = {
@@ -234,6 +248,7 @@
 				TargetAttributes = {
 					0830B5EF2001254B0079F616 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 					0830B6032001254B0079F616 = {
@@ -355,7 +370,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				089A182620150DF500BA4ECC /* OMDDLogCustomFormatter.swift in Sources */,
 				0830B5F62001254B0079F616 /* ViewController.swift in Sources */,
+				089A181F2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift in Sources */,
 				0830B5F42001254B0079F616 /* AppDelegate.swift in Sources */,
 				089A181B2013D18B00BA4ECC /* OAuthClientSettings.swift in Sources */,
 			);
@@ -524,12 +541,15 @@
 			baseConfigurationReference = E218352899195896497F87C2 /* Pods-Auth0PKCETest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6A48ZC7746;
 				INFOPLIST_FILE = Auth0PKCETest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -540,12 +560,14 @@
 			baseConfigurationReference = 084B4155EC7E18423C7FB92E /* Pods-Auth0PKCETest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6A48ZC7746;
 				INFOPLIST_FILE = Auth0PKCETest/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

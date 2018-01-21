@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  Auth0PKCETest
 //
-//  Created by Tatyana Remayeva on 2018-01-06.
+//  Created by Kostiantyn Sokolinskyi on 2018-01-06.
 //  Copyright © 2018 Omni Mobile Works Inc. All rights reserved.
 //
 
@@ -25,7 +25,8 @@ class ViewController: UIViewController {
     func runAuthenticationFlow() {
         var settings = OAuthClientSettings.loadFrom(bundle: Bundle.main, plistName: "Auth0Settings")
         
-        DDLogDebug("Settings: \(settings)")
+        DDLogDebug("Settings: \(settings ?? nil)")
+        
         //print("Settings: \(settings)")
     }
 

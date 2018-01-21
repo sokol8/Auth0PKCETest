@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Auth0PKCETest
 //
-//  Created by Tatyana Remayeva on 2018-01-06.
+//  Created by Kostiantyn Sokolinskyi on 2018-01-06.
 //  Copyright © 2018 Omni Mobile Works Inc. All rights reserved.
 //
 
@@ -19,8 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Setup Logging
         DDLog.add(DDTTYLogger.sharedInstance)
+        DDTTYLogger.sharedInstance.logFormatter = OMDDLogCustomFormatter()
         
-        DDLogDebug("Application launched")
+        DDLogInfo("Application launched")
         
         
         return true
