@@ -58,6 +58,7 @@
 		089A181C2013D77400BA4ECC /* Auth0Settings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Auth0Settings.plist; sourceTree = "<group>"; };
 		089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDebugStringConvertibleExtension.swift; sourceTree = "<group>"; };
 		089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OMDDLogCustomFormatter.swift; sourceTree = "<group>"; };
+		089A18282015267500BA4ECC /* Auth0PKCETest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Auth0PKCETest-Bridging-Header.h"; sourceTree = "<group>"; };
 		E218352899195896497F87C2 /* Pods-Auth0PKCETest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Auth0PKCETest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Auth0PKCETest/Pods-Auth0PKCETest.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,6 +122,7 @@
 				0830B5FC2001254B0079F616 /* LaunchScreen.storyboard */,
 				0830B5FF2001254B0079F616 /* Info.plist */,
 				089A181C2013D77400BA4ECC /* Auth0Settings.plist */,
+				089A18282015267500BA4ECC /* Auth0PKCETest-Bridging-Header.h */,
 			);
 			path = Auth0PKCETest;
 			sourceTree = "<group>";
@@ -548,7 +550,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Auth0PKCETest/Auth0PKCETest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -567,7 +569,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Auth0PKCETest/Auth0PKCETest-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
