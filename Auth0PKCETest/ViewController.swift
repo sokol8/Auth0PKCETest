@@ -10,21 +10,30 @@ import UIKit
 import CocoaLumberjack
 import WebKit
 
-class ViewController: UIViewController, WKUIDelegate {
+class ViewController: UIViewController {
     
-    var authorizationWebView: WKWebView?
-
+    var authorizationWebView: WKWebView!
+    var oauthSettings: OAuthClientSettings!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        setupWebView()
         runAuthenticationFlow()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
+//    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+//        DDLogDebug("WebView Strat to load")
+//    }
+//
+//    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+//        DDLogDebug("WebView finish to load")
+//    }
+
 }
 
 // MARK: WebView
@@ -33,14 +42,14 @@ extension ViewController {
     func setupWebView() {
         let webConfiguration = WKWebViewConfiguration()
         authorizationWebView = WKWebView(frame: self.view.bounds, configuration: webConfiguration)
-        authorizationWebView?.uiDelegate = self
-        view.addSubview(authorizationWebView!)
+        authorizationWebView.navigationDelegate = self
+        view = authorizationWebView
     }
     
     func loadWebView(withOAuthSettings settings: OAuthClientSettings) {
         if let request = authorizationURLRequest(withOAuthClientSettings: settings) {
             DDLogInfo("loading Web View with request: \(request)")
-            authorizationWebView?.load(request)
+            authorizationWebView.load(request)
         }
     }
     
@@ -79,8 +88,6 @@ extension ViewController {
 extension ViewController {
     
     func runAuthenticationFlow() {
-        
-        // Load settings from plist file
         guard
             var settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
             else {
@@ -117,11 +124,71 @@ extension ViewController {
     
     func requestAuthorizationCode(withOAuthSettings settings : OAuthClientSettings) {
         DDLogInfo("Starting Authorization Code request")
-        setupWebView()
         loadWebView(withOAuthSettings: settings)
+    }
+    
+    func isOAuthRedirectURL(_ url: URL) -> Bool {
+        DDLogDebug("path: '\(url.absoluteURL)'")
+        
+        
+        if url.absoluteString.hasPrefix()
+        
+        return true
     }
 }
 
+//MARK:- WKNavigationDelegate
+extension ViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        DDLogInfo("WebView Started loading")
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        DDLogInfo("WebView finished loading")
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        handleError(error)
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        handleError(error)
+    }
+    
+    func handleError(_ error: Error) {
+        DDLogError("WebKit error: '\(error)'")
+//        if let failingUrl = error.userInfo["NSErrorFailingURLStringKey"] as? String {
+//
+//            DDLogDebug("Failing URL: '\(failingUrl)'")
+//        }
+    }
+    
+    func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        DDLogDebug("Did Recieve server redirect for Navigation Item: '\(navigation)'")
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Swift.Void)
+    {
+        DDLogDebug("Decide policy for Navigation Item: '\(navigationAction)'")
+        
+        guard let url = navigationAction.request.url
+            else {
+                decisionHandler(.allow)
+                return
+        }
+        
+        if isOAuthRedirectURL(url) {
+            DDLogDebug("last path component: '\(url.lastPathComponent)'")
+            decisionHandler(.cancel)
+            return
+        }
+        else {
+            decisionHandler(.allow)
+        }
+    }
+}
+
+// MARK: Data extension for codes encoding
 extension Data {
     func pkceEncodedString() -> String {
         return self.base64EncodedString()
