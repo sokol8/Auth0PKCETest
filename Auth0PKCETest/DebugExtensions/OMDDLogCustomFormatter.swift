@@ -11,13 +11,10 @@ import CocoaLumberjack
 
 class OMDDLogCustomFormatter : NSObject, DDLogFormatter {
     
-    var dateFormatter: DateFormatter
-    var loggerCount: Int
+    let dateFormatter = DateFormatter()
     
     public override init() {
-        dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss:SSS"
-        loggerCount = 0
         super.init()
     }
     
@@ -37,9 +34,4 @@ class OMDDLogCustomFormatter : NSObject, DDLogFormatter {
         
         return formattedMessage
     }
-    
-//    func didAddToLogger<T: DDLogger>(logger: T) {
-//        loggerCount += 1
-//    }
-    
 }

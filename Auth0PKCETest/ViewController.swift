@@ -8,9 +8,11 @@
 
 import UIKit
 import CocoaLumberjack
-//import CommonCrypto
+import WebKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, WKUIDelegate {
+    
+    var authorizationWebView: WKWebView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +27,53 @@ class ViewController: UIViewController {
     
 }
 
+// MARK: WebView
+extension ViewController {
+    
+    func setupWebView() {
+        let webConfiguration = WKWebViewConfiguration()
+        authorizationWebView = WKWebView(frame: self.view.bounds, configuration: webConfiguration)
+        authorizationWebView?.uiDelegate = self
+        view.addSubview(authorizationWebView!)
+    }
+    
+    func loadWebView(withOAuthSettings settings: OAuthClientSettings) {
+        if let request = authorizationURLRequest(withOAuthClientSettings: settings) {
+            DDLogInfo("loading Web View with request: \(request)")
+            authorizationWebView?.load(request)
+        }
+    }
+    
+    func authorizationURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
+        guard
+            var components = URLComponents(string: settings.OAuthBaseURL)
+            else {
+                DDLogError("error forming URL from base URL '\(settings.OAuthBaseURL)'")
+                return nil
+        }
+        
+        components.path = settings.authorizationCodePath
+        
+        let audienceItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["audience"]!, value: settings.audience)
+        let scopeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["scope"]!, value: settings.scope)
+        let responseTypeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["responseType"]!, value: settings.responseType)
+        let clientIdItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["clientId"]!, value: settings.clientId)
+        let codeChallengeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["codeChallenge"]!, value: settings.codeChallenge)
+        let codeChallengeMethodItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["codeChallengeMethod"]!, value: settings.codeChallengeMethod)
+        let redirectUrlItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["redirectUri"]!, value: settings.redirectUri)
+        components.queryItems = [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
+        
+        if let url = components.url {
+            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
+            DDLogInfo("Authorization code URL Request: '\(request)'")
+            return request
+        } else {
+            DDLogError("failed forming Authorization Code Request URL from OAuth settings: \(settings)")
+            return nil
+        }
+    }
+}
+
 
 // MARK: Authentication flow
 extension ViewController {
@@ -33,7 +82,7 @@ extension ViewController {
         
         // Load settings from plist file
         guard
-            var settings = OAuthClientSettings.loadFrom(bundle: Bundle.main, plistName: "Auth0Settings")
+            var settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
             else {
                 DDLogError("Cannot read settings from Bundle");
                 return
@@ -41,7 +90,9 @@ extension ViewController {
         settings.codeVerifier = generateCodeVerifier()
         settings.codeChallenge = generateCodeChallenge(fromVerifier: settings.codeVerifier!)
         
-        DDLogDebug("Settings: \(settings)")
+        DDLogInfo("Settings: \(settings)")
+        
+        requestAuthorizationCode(withOAuthSettings: settings)
     }
     
     func generateCodeVerifier() -> String {
@@ -62,6 +113,12 @@ extension ViewController {
         let hash = Data(bytes: buffer)
         let challenge = hash.pkceEncodedString()
         return challenge
+    }
+    
+    func requestAuthorizationCode(withOAuthSettings settings : OAuthClientSettings) {
+        DDLogInfo("Starting Authorization Code request")
+        setupWebView()
+        loadWebView(withOAuthSettings: settings)
     }
 }
 

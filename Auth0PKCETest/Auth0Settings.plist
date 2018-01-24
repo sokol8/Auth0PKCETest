@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>OAuthBaseURL</key>
+	<string>https://metaboliccompass.auth0.com</string>
+	<key>grantType</key>
+	<string>authorization_code</string>
+	<key>authorizationCodePath</key>
+	<string>/authorize</string>
+	<key>accessTokenPath</key>
+	<string>/oauth/token</string>
 	<key>codeChallengeMethod</key>
 	<string>S256</string>
 	<key>clientId</key>

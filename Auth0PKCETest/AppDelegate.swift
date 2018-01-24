@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DDLog.add(DDTTYLogger.sharedInstance)
         DDTTYLogger.sharedInstance.logFormatter = OMDDLogCustomFormatter()
         
-        DDLogInfo("Application launched")
+        DDLogDebug("Application launched")
         
         
         return true
