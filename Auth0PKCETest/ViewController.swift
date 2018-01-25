@@ -17,7 +17,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupWebView()
         runAuthenticationFlow()
     }
@@ -32,6 +31,7 @@ extension ViewController {
     
     func setupWebView() {
         let webConfiguration = WKWebViewConfiguration()
+        webConfiguration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         authorizationWebView = WKWebView(frame: self.view.bounds, configuration: webConfiguration)
         authorizationWebView.navigationDelegate = self
         view = authorizationWebView
