@@ -54,14 +54,17 @@ extension ViewController {
         
         components.path = settings.authorizationCodePath
         
-        let audienceItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["audience"]!, value: settings.audience)
-        let scopeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["scope"]!, value: settings.scope)
-        let responseTypeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["responseType"]!, value: settings.responseType)
-        let clientIdItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["clientId"]!, value: settings.clientId)
-        let codeChallengeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["codeChallenge"]!, value: settings.codeChallenge)
-        let codeChallengeMethodItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["codeChallengeMethod"]!, value: settings.codeChallengeMethod)
-        let redirectUrlItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeysMapping["redirectUri"]!, value: settings.redirectUri)
-        components.queryItems = [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
+//        let audienceItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.audience.rawValue, value: settings.audience)
+//        let scopeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.scope.rawValue, value: settings.scope)
+//        let responseTypeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.responseType.rawValue, value: settings.responseType)
+//        let clientIdItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.clientId.rawValue, value: settings.clientId)
+//        let codeChallengeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.codeChallenge.rawValue, value: settings.codeChallenge)
+//        let codeChallengeMethodItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.codeChallengeMethod.rawValue, value: settings.codeChallengeMethod)
+//        let redirectUrlItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.redirectUri.rawValue, value: settings.redirectUri)
+
+        //components.queryItems = [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
+        
+        components.queryItems = settings.urlComponentsQueryItems
         
         if let url = components.url {
             let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
@@ -160,7 +163,8 @@ extension ViewController {
         
         if let queryItems = urlComponents.queryItems {
             for queryItem in queryItems {
-                if queryItem.name == OAuthClientSettings.URLQueryItemKeysMapping["authorizationCode"] {
+                
+                if queryItem.name == OAuthClientSettings.URLQueryItemKeys.authorizationCode.rawValue {
                    return queryItem.value
                 }
             }
@@ -172,6 +176,8 @@ extension ViewController {
         
         return nil
     }
+    
+    
 }
 
 //MARK:- WKNavigationDelegate

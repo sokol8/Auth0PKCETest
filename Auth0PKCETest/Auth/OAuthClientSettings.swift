@@ -26,28 +26,18 @@ struct OAuthClientSettings : Decodable, CustomDebugStringConvertible {
     var grantType: String
     var authorizationCode: String?
     
-    // TODO: move to ENUM
-    static let URLQueryItemKeysMapping = [ "redirectUri"           : "redirect_uri",
-                                    "audience"              : "audience",
-                                    "scope"                 : "scope",
-                                    "responseType"          : "response_type",
-                                    "clientId"              : "client_id",
-                                    "codeChallengeMethod"   : "code_challenge_method",
-                                    "codeChallenge"         : "code_challenge",
-                                    "codeVerifier"          : "code_verifier",
-                                    "grantType"             : "grant_type",
-                                    "authorizationCode"     : "code"]
-    
-//    enum URLQueryItemKeys: String {
-//        case redirectUri = "redirect_uri"
-//        case audience
-//        case scope
-//        case responseType = "response_type"
-//        case clientId = "client_id"
-//        case codeChallenge = "code_challenge"
-//        case codeChallengeMethod = "code_challenge_method"
-//        case codeVerifier = "code_verifier"
-//    }
+    enum URLQueryItemKeys: String {
+        case redirectUri = "redirect_uri"
+        case audience = "audience"
+        case scope = "scope"
+        case responseType = "response_type"
+        case clientId = "client_id"
+        case codeChallenge = "code_challenge"
+        case codeChallengeMethod = "code_challenge_method"
+        case codeVerifier = "code_verifier"
+        case grantType = "grant_type"
+        case authorizationCode = "code"
+    }
 }
 
 extension OAuthClientSettings {
@@ -76,6 +66,18 @@ extension OAuthClientSettings {
             DDLogError("Failed parsing data out of file '\(fileURL)'")
             return nil
         }
+    }
+    
+    var urlComponentsQueryItems: [URLQueryItem] {
+        let audienceItem = URLQueryItem(name: URLQueryItemKeys.audience.rawValue, value: audience)
+        let scopeItem = URLQueryItem(name: URLQueryItemKeys.scope.rawValue, value: scope)
+        let responseTypeItem = URLQueryItem(name: URLQueryItemKeys.responseType.rawValue, value: responseType)
+        let clientIdItem = URLQueryItem(name: URLQueryItemKeys.clientId.rawValue, value: clientId)
+        let codeChallengeItem = URLQueryItem(name: URLQueryItemKeys.codeChallenge.rawValue, value: codeChallenge)
+        let codeChallengeMethodItem = URLQueryItem(name: URLQueryItemKeys.codeChallengeMethod.rawValue, value: codeChallengeMethod)
+        let redirectUrlItem = URLQueryItem(name: URLQueryItemKeys.redirectUri.rawValue, value: redirectUri)
+        
+        return [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
     }
 }
 
