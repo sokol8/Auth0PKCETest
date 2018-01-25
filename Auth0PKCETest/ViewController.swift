@@ -44,37 +44,6 @@ extension ViewController {
         }
     }
     
-    func authorizationURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
-        guard
-            var components = URLComponents(string: settings.OAuthBaseURL)
-            else {
-                DDLogError("error forming URL from base URL '\(settings.OAuthBaseURL)'")
-                return nil
-        }
-        
-        components.path = settings.authorizationCodePath
-        
-//        let audienceItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.audience.rawValue, value: settings.audience)
-//        let scopeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.scope.rawValue, value: settings.scope)
-//        let responseTypeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.responseType.rawValue, value: settings.responseType)
-//        let clientIdItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.clientId.rawValue, value: settings.clientId)
-//        let codeChallengeItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.codeChallenge.rawValue, value: settings.codeChallenge)
-//        let codeChallengeMethodItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.codeChallengeMethod.rawValue, value: settings.codeChallengeMethod)
-//        let redirectUrlItem = URLQueryItem(name: OAuthClientSettings.URLQueryItemKeys.redirectUri.rawValue, value: settings.redirectUri)
-
-        //components.queryItems = [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
-        
-        components.queryItems = settings.urlComponentsQueryItems
-        
-        if let url = components.url {
-            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 10.0)
-            DDLogInfo("Authorization code URL Request: '\(request)'")
-            return request
-        } else {
-            DDLogError("failed forming Authorization Code Request URL from OAuth settings: \(settings)")
-            return nil
-        }
-    }
 }
 
 
@@ -82,6 +51,9 @@ extension ViewController {
 extension ViewController {
     
     func runAuthenticationFlow() {
+        
+        clearCookies()
+        
         guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
             else {
                 DDLogError("Cannot read settings from Bundle. Bailing out from Authentication flow");
@@ -106,6 +78,19 @@ extension ViewController {
         DDLogInfo("Settings: \(oauthSettings)")
         
         requestAuthorizationCode(withOAuthSettings: oauthSettings)
+    }
+    
+    func clearCookies() {
+        let cookieJar = HTTPCookieStorage.shared
+        
+        DDLogInfo("cleaning Cookies")
+        
+        for cookie in cookieJar.cookies! {
+            DDLogDebug(cookie.name+"="+cookie.value)
+            cookieJar.deleteCookie(cookie)
+        }
+        
+        DDLogInfo("finished cleaning Cookies")
     }
     
     func generateCodeVerifier() -> String? {
@@ -144,9 +129,27 @@ extension ViewController {
         loadWebView(withOAuthSettings: settings)
     }
     
-    func isOAuthRedirectURL(_ url: URL) -> Bool {
-        DDLogDebug("path: '\(url.absoluteString)'")
+    func authorizationURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
+        guard var components = URLComponents(string: settings.OAuthBaseURL)
+            else {
+                DDLogError("error forming URL from base URL '\(settings.OAuthBaseURL)'")
+                return nil
+        }
         
+        components.path = settings.authorizationCodePath
+        components.queryItems = settings.authorizationRequestURLQueryItems
+        
+        if let url = components.url {
+            let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60.0)
+            DDLogInfo("Authorization code URL Request: '\(request)'")
+            return request
+        } else {
+            DDLogError("failed forming Authorization Code Request URL from OAuth settings: \(settings)")
+            return nil
+        }
+    }
+    
+    func isOAuthRedirectURL(_ url: URL) -> Bool {
         if let range = url.absoluteString.range(of: oauthSettings.redirectUri, options: .caseInsensitive) {
             return (0 == range.lowerBound.encodedOffset)
         } else {
@@ -177,18 +180,79 @@ extension ViewController {
         return nil
     }
     
+    func requestAccessToken(withOAuthSettings settings : OAuthClientSettings) {
+        
+        guard let urlRequest = accessTokenURLRequest(withOAuthClientSettings: settings)
+            else {
+                DDLogError("Failed creating URL Request with settings: '\(settings)'")
+                return
+        }
+        
+        let session = URLSession.shared
+        let dataTask = session.dataTask(with: urlRequest, completionHandler: { (data, response, error) -> Void in
+            if (error != nil) {
+                DDLogError("Authentication Token request error '\(error!)'")
+            }
+            else {
+                
+                DDLogDebug("Authentication Token response '\(response!)'")
+                DDLogDebug("Access Token Data: \(data)")
+                
+                guard let json = try? JSONSerialization.jsonObject(with: data!) as? [String: Any]
+                    else {
+                        DDLogError("error serializing JSON into Data");
+                        return
+                }
+                
+                DDLogDebug("Access Token Response JSON: '\(json)'")
+            }
+        })
+        dataTask.resume()
+    }
+    
+    func accessTokenURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
+        guard var components = URLComponents(string: settings.OAuthBaseURL)
+            else {
+                DDLogError("error forming URL from base URL: '\(settings.OAuthBaseURL)'")
+                return nil
+        }
+        components.path = settings.accessTokenPath
+        
+        guard let url = components.url
+            else {
+                DDLogError("error getting URL out of components: '\(components)'")
+                return nil
+        }
+        
+        DDLogDebug("Access Token Request Dictionary: '\(settings.accessTokenRequestParameters)'")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: settings.accessTokenRequestParameters, options: [])
+            else {
+                DDLogError("Error serializing setitngs into JSON")
+                return nil
+        }
+        
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60.0)
+        
+        request.httpMethod = "POST"
+        request.allHTTPHeaderFields = ["content-type": "application/json"]
+        request.httpBody = httpBody
+        
+        DDLogDebug("Access Token URL Request: '\(request)'")
+        
+        return request
+    }
     
 }
 
 //MARK:- WKNavigationDelegate
 extension ViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        DDLogInfo("WebView Started loading")
-    }
-    
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        DDLogInfo("WebView finished loading")
-    }
+//    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+//        DDLogInfo("WebView Started loading")
+//    }
+//
+//    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+//        DDLogInfo("WebView finished loading")
+//    }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         handleError(error)
@@ -204,10 +268,6 @@ extension ViewController: WKNavigationDelegate {
         DDLogError("WebKit error: '\(error)'")
     }
     
-    func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        DDLogDebug("Did Recieve server redirect for Navigation Item: '\(navigation)'")
-    }
-    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Swift.Void)
     {
         DDLogDebug("Decide policy for Navigation Item: '\(navigationAction)'")
@@ -221,8 +281,11 @@ extension ViewController: WKNavigationDelegate {
         
         if isOAuthRedirectURL(url) {
             oauthSettings.authorizationCode = callbackCode(fromURL: url)
-            DDLogDebug("Authorization code: '\(oauthSettings.authorizationCode)'")
+            DDLogDebug("Recieved Authorization Code: '\(oauthSettings.authorizationCode)'")
             decisionHandler(.cancel)
+            
+            requestAccessToken(withOAuthSettings: oauthSettings)
+            
             return
         }
         else {

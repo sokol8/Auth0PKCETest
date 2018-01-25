@@ -68,7 +68,7 @@ extension OAuthClientSettings {
         }
     }
     
-    var urlComponentsQueryItems: [URLQueryItem] {
+    var authorizationRequestURLQueryItems: [URLQueryItem] {
         let audienceItem = URLQueryItem(name: URLQueryItemKeys.audience.rawValue, value: audience)
         let scopeItem = URLQueryItem(name: URLQueryItemKeys.scope.rawValue, value: scope)
         let responseTypeItem = URLQueryItem(name: URLQueryItemKeys.responseType.rawValue, value: responseType)
@@ -78,6 +78,15 @@ extension OAuthClientSettings {
         let redirectUrlItem = URLQueryItem(name: URLQueryItemKeys.redirectUri.rawValue, value: redirectUri)
         
         return [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
+    }
+    
+    var accessTokenRequestParameters: [String : String] {
+        let parameterDictionary = [URLQueryItemKeys.grantType.rawValue : grantType,
+                                   URLQueryItemKeys.clientId.rawValue : clientId,
+                                   URLQueryItemKeys.codeVerifier.rawValue: codeVerifier!,
+                                   URLQueryItemKeys.authorizationCode.rawValue: authorizationCode!,
+                                   URLQueryItemKeys.redirectUri.rawValue: redirectUri]
+        return parameterDictionary
     }
 }
 
