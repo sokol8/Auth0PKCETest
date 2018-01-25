@@ -25,15 +25,6 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-//    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-//        DDLogDebug("WebView Strat to load")
-//    }
-//
-//    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-//        DDLogDebug("WebView finish to load")
-//    }
-
 }
 
 // MARK: WebView
@@ -88,29 +79,52 @@ extension ViewController {
 extension ViewController {
     
     func runAuthenticationFlow() {
-        guard
-            var settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
+        guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
             else {
-                DDLogError("Cannot read settings from Bundle");
+                DDLogError("Cannot read settings from Bundle. Bailing out from Authentication flow");
                 return
         }
-        settings.codeVerifier = generateCodeVerifier()
-        settings.codeChallenge = generateCodeChallenge(fromVerifier: settings.codeVerifier!)
+        oauthSettings = settings
         
-        DDLogInfo("Settings: \(settings)")
+        guard let codeVerifier = generateCodeVerifier()
+            else {
+                DDLogError("Failed to generate CodeVerifier. Bailing out from Authentication flow")
+                return
+        }
+        oauthSettings.codeVerifier = codeVerifier
         
-        requestAuthorizationCode(withOAuthSettings: settings)
+        guard let codeChallenge = generateCodeChallenge(fromVerifier: oauthSettings.codeVerifier!)
+            else {
+                DDLogError("Failed to generate CodeChallenge. Bailing out from Authentication flow")
+                return
+        }
+        oauthSettings.codeChallenge = codeChallenge
+        
+        DDLogInfo("Settings: \(oauthSettings)")
+        
+        requestAuthorizationCode(withOAuthSettings: oauthSettings)
     }
     
-    func generateCodeVerifier() -> String {
+    func generateCodeVerifier() -> String? {
         var buffer = [UInt8](repeating: 0, count: 32)
-        _ = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
+        let errorCode = SecRandomCopyBytes(kSecRandomDefault, buffer.count, &buffer)
+        
+        guard errorCode == errSecSuccess
+            else {
+                DDLogError("Failed generating random bytes with error '\(errorCode)'")
+                return nil
+        }
+        
         let verifier = Data(bytes: buffer).pkceEncodedString()
         return verifier
     }
     
     func generateCodeChallenge(fromVerifier verifier: String) -> String? {
-        guard let data = verifier.data(using: .utf8) else { return nil }
+        guard let data = verifier.data(using: .utf8)
+            else {
+                DDLogError("Cannot get data out of verifier: '\(verifier)'")
+                return nil
+        }
         
         var buffer = [UInt8](repeating: 0,  count: Int(CC_SHA256_DIGEST_LENGTH))
         data.withUnsafeBytes {
@@ -128,12 +142,35 @@ extension ViewController {
     }
     
     func isOAuthRedirectURL(_ url: URL) -> Bool {
-        DDLogDebug("path: '\(url.absoluteURL)'")
+        DDLogDebug("path: '\(url.absoluteString)'")
         
+        if let range = url.absoluteString.range(of: oauthSettings.redirectUri, options: .caseInsensitive) {
+            return (0 == range.lowerBound.encodedOffset)
+        } else {
+            return false
+        }
+    }
+    
+    func callbackCode(fromURL url: URL) -> String? {
+        guard let urlComponents = URLComponents.init(url: url, resolvingAgainstBaseURL: false )
+            else {
+                DDLogError("Failed initialising URLComponents with URL: '\(url)'")
+                return nil
+        }
         
-        if url.absoluteString.hasPrefix()
+        if let queryItems = urlComponents.queryItems {
+            for queryItem in queryItems {
+                if queryItem.name == OAuthClientSettings.URLQueryItemKeysMapping["authorizationCode"] {
+                   return queryItem.value
+                }
+            }
+        }
+        else {
+            DDLogError("Empty query items of URL components: '\(urlComponents)'")
+            return nil
+        }
         
-        return true
+        return nil
     }
 }
 
@@ -155,12 +192,10 @@ extension ViewController: WKNavigationDelegate {
         handleError(error)
     }
     
+    // TODO:
+    // ADD support for Code=-1001 "The request timed out."
     func handleError(_ error: Error) {
         DDLogError("WebKit error: '\(error)'")
-//        if let failingUrl = error.userInfo["NSErrorFailingURLStringKey"] as? String {
-//
-//            DDLogDebug("Failing URL: '\(failingUrl)'")
-//        }
     }
     
     func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
@@ -176,9 +211,11 @@ extension ViewController: WKNavigationDelegate {
                 decisionHandler(.allow)
                 return
         }
+        DDLogDebug("\n\nNavigation URL: '\(url)'\n\n")
         
         if isOAuthRedirectURL(url) {
-            DDLogDebug("last path component: '\(url.lastPathComponent)'")
+            oauthSettings.authorizationCode = callbackCode(fromURL: url)
+            DDLogDebug("Authorization code: '\(oauthSettings.authorizationCode)'")
             decisionHandler(.cancel)
             return
         }
@@ -187,15 +224,3 @@ extension ViewController: WKNavigationDelegate {
         }
     }
 }
-
-// MARK: Data extension for codes encoding
-extension Data {
-    func pkceEncodedString() -> String {
-        return self.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "")
-            .replacingOccurrences(of: "=", with: "")
-            .trimmingCharacters(in: .whitespaces)
-    }
-}
-

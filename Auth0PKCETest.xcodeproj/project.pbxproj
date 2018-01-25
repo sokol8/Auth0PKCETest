@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0815DD662019CE0400049F32 /* Data+PKCEEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815DD652019CE0400049F32 /* Data+PKCEEncoding.swift */; };
 		0830B5F42001254B0079F616 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B5F32001254B0079F616 /* AppDelegate.swift */; };
 		0830B5F62001254B0079F616 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B5F52001254B0079F616 /* ViewController.swift */; };
 		0830B5F92001254B0079F616 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0830B5F72001254B0079F616 /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		0034BB34E7F3E30B9A4F757C /* Pods_Auth0PKCETest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Auth0PKCETest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0815DD652019CE0400049F32 /* Data+PKCEEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+PKCEEncoding.swift"; sourceTree = "<group>"; };
 		0830B5F02001254B0079F616 /* Auth0PKCETest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Auth0PKCETest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0830B5F32001254B0079F616 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0830B5F52001254B0079F616 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				089A181A2013D18B00BA4ECC /* OAuthClientSettings.swift */,
+				0815DD652019CE0400049F32 /* Data+PKCEEncoding.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -375,6 +378,7 @@
 				089A182620150DF500BA4ECC /* OMDDLogCustomFormatter.swift in Sources */,
 				0830B5F62001254B0079F616 /* ViewController.swift in Sources */,
 				089A181F2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift in Sources */,
+				0815DD662019CE0400049F32 /* Data+PKCEEncoding.swift in Sources */,
 				0830B5F42001254B0079F616 /* AppDelegate.swift in Sources */,
 				089A181B2013D18B00BA4ECC /* OAuthClientSettings.swift in Sources */,
 			);

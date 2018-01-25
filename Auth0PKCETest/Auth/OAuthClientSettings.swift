@@ -26,6 +26,7 @@ struct OAuthClientSettings : Decodable, CustomDebugStringConvertible {
     var grantType: String
     var authorizationCode: String?
     
+    // TODO: move to ENUM
     static let URLQueryItemKeysMapping = [ "redirectUri"           : "redirect_uri",
                                     "audience"              : "audience",
                                     "scope"                 : "scope",
