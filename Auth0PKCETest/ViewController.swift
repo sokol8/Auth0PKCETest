@@ -9,18 +9,27 @@
 import UIKit
 import CocoaLumberjack
 import WebKit
+import SafariServices
 
 class ViewController: UIViewController {
     
-    var authorizationWebView: WKWebView!
     var oauthSettings: OAuthClientSettings!
+    var authorizationWebView: WKWebView!
+    var safariViewController: SFSafariViewController!
+    var authSafariSession: SFAuthenticationSession!
+    
+    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var logTextView: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupWebView()
-        runAuthenticationFlow()
+        DDLogDebug("self view: \(view)")
     }
 
+    @IBAction func loginAction(_ sender: Any) {
+        runAuthenticationFlow()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -29,7 +38,45 @@ class ViewController: UIViewController {
 // MARK: WebView
 extension ViewController {
     
-    func setupWebView() {
+    func loadSafariWebView(withOAuthSettings settings: OAuthClientSettings) {
+        
+        guard let url = authorizationURL(withOAuthSettings: settings)
+            else {
+                DDLogError("Failed forming Authorization URL with settings: \(settings)")
+                return
+        }
+        
+        safariViewController = SFSafariViewController(url: url)
+        safariViewController.delegate = self
+        
+        self.present(safariViewController, animated: true, completion: nil)
+    }
+    
+    // NOTE: SFAuthenticationSession doesn't properly work with Auth0. Raises error "Safari cannot open the page because the address is invalid"
+    // Errors is raised disregarding of whether we pass nil or valid redirectUri to callbackURLScheme
+    func loadAuthenticationSession(withOAuthSettings settings: OAuthClientSettings) {
+        guard let url = authorizationURL(withOAuthSettings: settings)
+            else {
+                DDLogError("Failed forming Authorization URL with settings: \(settings)")
+                return
+        }
+        
+        authSafariSession = SFAuthenticationSession(url: url, callbackURLScheme: nil)
+        { (callBack:URL?, error:Error?) in
+            guard error == nil
+                else {
+                    DDLogError("Authentication error: '\(error)'")
+                    return
+            }
+            DDLogDebug("got callBackURL: '\(callBack)'")
+        }
+        
+        let startStatus = authSafariSession.start()
+        DDLogInfo("Auth Session started: \(startStatus)")
+    }
+
+    
+    func setupWKWebView() {
         let webConfiguration = WKWebViewConfiguration()
         webConfiguration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         authorizationWebView = WKWebView(frame: self.view.bounds, configuration: webConfiguration)
@@ -37,13 +84,14 @@ extension ViewController {
         view = authorizationWebView
     }
     
-    func loadWebView(withOAuthSettings settings: OAuthClientSettings) {
-        if let request = authorizationURLRequest(withOAuthClientSettings: settings) {
+    func loadWKWebView(withOAuthSettings settings: OAuthClientSettings) {
+        setupWKWebView()
+        
+        if let request = authorizationURLRequest(withOAuthSettings: settings) {
             DDLogInfo("loading Web View with request: \(request)")
             authorizationWebView.load(request)
         }
     }
-    
 }
 
 
@@ -127,10 +175,13 @@ extension ViewController {
     
     func requestAuthorizationCode(withOAuthSettings settings : OAuthClientSettings) {
         DDLogInfo("Starting Authorization Code request")
-        loadWebView(withOAuthSettings: settings)
+        
+        loadSafariWebView(withOAuthSettings: settings)
+        //loadAuthenticationSession(withOAuthSettings: settings)
+        //loadWKWebView(withOAuthSettings: settings)
     }
     
-    func authorizationURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
+    func authorizationURL(withOAuthSettings settings: OAuthClientSettings) -> URL? {
         guard var components = URLComponents(string: settings.OAuthBaseURL)
             else {
                 DDLogError("error forming URL from base URL '\(settings.OAuthBaseURL)'")
@@ -140,7 +191,11 @@ extension ViewController {
         components.path = settings.authorizationCodePath
         components.queryItems = settings.authorizationRequestURLQueryItems
         
-        if let url = components.url {
+        return components.url
+    }
+    
+    func authorizationURLRequest(withOAuthSettings settings: OAuthClientSettings) -> URLRequest? {
+        if let url = authorizationURL(withOAuthSettings: settings) {
             let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60.0)
             DDLogInfo("Authorization code URL Request: '\(request)'")
             return request
@@ -183,7 +238,7 @@ extension ViewController {
     
     func requestAccessToken(withOAuthSettings settings : OAuthClientSettings) {
         
-        guard let urlRequest = accessTokenURLRequest(withOAuthClientSettings: settings)
+        guard let urlRequest = accessTokenURLRequest(withOAuthSettings: settings)
             else {
                 DDLogError("Failed creating URL Request with settings: '\(settings)'")
                 return
@@ -211,7 +266,7 @@ extension ViewController {
         dataTask.resume()
     }
     
-    func accessTokenURLRequest(withOAuthClientSettings settings: OAuthClientSettings) -> URLRequest? {
+    func accessTokenURLRequest(withOAuthSettings settings: OAuthClientSettings) -> URLRequest? {
         guard var components = URLComponents(string: settings.OAuthBaseURL)
             else {
                 DDLogError("error forming URL from base URL: '\(settings.OAuthBaseURL)'")
@@ -296,5 +351,16 @@ extension ViewController: WKNavigationDelegate {
         else {
             decisionHandler(.allow)
         }
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate
+extension ViewController : SFSafariViewControllerDelegate {
+    func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool){
+        DDLogInfo("completed initial load of \(controller)")
+    }
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        DDLogInfo("user closed Safari View Controller")
     }
 }

@@ -13,7 +13,6 @@
 		0830B5F62001254B0079F616 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B5F52001254B0079F616 /* ViewController.swift */; };
 		0830B5F92001254B0079F616 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0830B5F72001254B0079F616 /* Main.storyboard */; };
 		0830B5FB2001254B0079F616 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0830B5FA2001254B0079F616 /* Assets.xcassets */; };
-		0830B5FE2001254B0079F616 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0830B5FC2001254B0079F616 /* LaunchScreen.storyboard */; };
 		0830B6092001254B0079F616 /* Auth0PKCETestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B6082001254B0079F616 /* Auth0PKCETestTests.swift */; };
 		0830B6142001254B0079F616 /* Auth0PKCETestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B6132001254B0079F616 /* Auth0PKCETestUITests.swift */; };
 		089A181B2013D18B00BA4ECC /* OAuthClientSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A181A2013D18B00BA4ECC /* OAuthClientSettings.swift */; };
@@ -49,7 +48,6 @@
 		0830B5F52001254B0079F616 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0830B5F82001254B0079F616 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0830B5FA2001254B0079F616 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		0830B5FD2001254B0079F616 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0830B5FF2001254B0079F616 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0830B6042001254B0079F616 /* Auth0PKCETestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Auth0PKCETestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0830B6082001254B0079F616 /* Auth0PKCETestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth0PKCETestTests.swift; sourceTree = "<group>"; };
@@ -125,7 +123,6 @@
 				0830B5F52001254B0079F616 /* ViewController.swift */,
 				0830B5F72001254B0079F616 /* Main.storyboard */,
 				0830B5FA2001254B0079F616 /* Assets.xcassets */,
-				0830B5FC2001254B0079F616 /* LaunchScreen.storyboard */,
 				0830B5FF2001254B0079F616 /* Info.plist */,
 				089A18282015267500BA4ECC /* Auth0PKCETest-Bridging-Header.h */,
 			);
@@ -297,7 +294,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				089A181D2013D77400BA4ECC /* Auth0Settings.plist in Resources */,
-				0830B5FE2001254B0079F616 /* LaunchScreen.storyboard in Resources */,
 				0830B5FB2001254B0079F616 /* Assets.xcassets in Resources */,
 				0815DD68201D003D00049F32 /* Auth0SettingsTestApp.plist in Resources */,
 				0830B5F92001254B0079F616 /* Main.storyboard in Resources */,
@@ -428,14 +424,6 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		0830B5FC2001254B0079F616 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0830B5FD2001254B0079F616 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -555,13 +543,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6A48ZC7746;
 				INFOPLIST_FILE = Auth0PKCETest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Auth0PKCETest/Auth0PKCETest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -574,12 +563,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6A48ZC7746;
 				INFOPLIST_FILE = Auth0PKCETest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = om.works.Auth0PKCETest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Auth0PKCETest/Auth0PKCETest-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
