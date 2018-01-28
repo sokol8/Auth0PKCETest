@@ -54,7 +54,8 @@ extension ViewController {
         
         clearCookies()
         
-        guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
+        //guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
+        guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0SettingsTestApp")
             else {
                 DDLogError("Cannot read settings from Bundle. Bailing out from Authentication flow");
                 return
@@ -264,6 +265,7 @@ extension ViewController: WKNavigationDelegate {
     
     // TODO:
     // ADD support for Code=-1001 "The request timed out."
+    //  ADD support for Error Domain=WebKitErrorDomain Code=102 "Frame load interrupted"
     func handleError(_ error: Error) {
         DDLogError("WebKit error: '\(error)'")
     }
@@ -279,6 +281,9 @@ extension ViewController: WKNavigationDelegate {
         }
         DDLogDebug("\n\nNavigation URL: '\(url)'\n\n")
         
+        
+        //TODO: add support for error 'om.works.auth0pkcetest://mc-test.auth0.com/ios/om.works.Auth0PKCETest/callback?error=access_denied&error_description=Service%20not%20found%3A%20https%3A%2F%2Fapi-dev.metaboliccompass.com'
+        // TO REPERODUCE - set audience to 'api-dev.metaboliccompass.com' with MC-TEST client
         if isOAuthRedirectURL(url) {
             oauthSettings.authorizationCode = callbackCode(fromURL: url)
             DDLogDebug("Recieved Authorization Code: '\(oauthSettings.authorizationCode)'")

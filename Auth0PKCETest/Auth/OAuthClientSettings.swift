@@ -80,11 +80,11 @@ extension OAuthClientSettings {
         return [audienceItem, scopeItem, responseTypeItem, clientIdItem, codeChallengeItem, codeChallengeMethodItem, redirectUrlItem]
     }
     
-    var accessTokenRequestParameters: [String : String] {
+    var accessTokenRequestParameters: [String : String?] {
         let parameterDictionary = [URLQueryItemKeys.grantType.rawValue : grantType,
                                    URLQueryItemKeys.clientId.rawValue : clientId,
-                                   URLQueryItemKeys.codeVerifier.rawValue: codeVerifier!,
-                                   URLQueryItemKeys.authorizationCode.rawValue: authorizationCode!,
+                                   URLQueryItemKeys.codeVerifier.rawValue: codeVerifier,
+                                   URLQueryItemKeys.authorizationCode.rawValue: authorizationCode,
                                    URLQueryItemKeys.redirectUri.rawValue: redirectUri]
         return parameterDictionary
     }

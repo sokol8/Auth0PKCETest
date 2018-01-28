@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0815DD662019CE0400049F32 /* Data+PKCEEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815DD652019CE0400049F32 /* Data+PKCEEncoding.swift */; };
+		0815DD68201D003D00049F32 /* Auth0SettingsTestApp.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0815DD67201D003D00049F32 /* Auth0SettingsTestApp.plist */; };
 		0830B5F42001254B0079F616 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B5F32001254B0079F616 /* AppDelegate.swift */; };
 		0830B5F62001254B0079F616 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0830B5F52001254B0079F616 /* ViewController.swift */; };
 		0830B5F92001254B0079F616 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0830B5F72001254B0079F616 /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 /* Begin PBXFileReference section */
 		0034BB34E7F3E30B9A4F757C /* Pods_Auth0PKCETest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Auth0PKCETest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0815DD652019CE0400049F32 /* Data+PKCEEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+PKCEEncoding.swift"; sourceTree = "<group>"; };
+		0815DD67201D003D00049F32 /* Auth0SettingsTestApp.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Auth0SettingsTestApp.plist; sourceTree = "<group>"; };
 		0830B5F02001254B0079F616 /* Auth0PKCETest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Auth0PKCETest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0830B5F32001254B0079F616 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0830B5F52001254B0079F616 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,8 @@
 		0830B5F22001254B0079F616 /* Auth0PKCETest */ = {
 			isa = PBXGroup;
 			children = (
+				089A181C2013D77400BA4ECC /* Auth0Settings.plist */,
+				0815DD67201D003D00049F32 /* Auth0SettingsTestApp.plist */,
 				089A182020150C2300BA4ECC /* DebugExtensions */,
 				089A18192013D0D000BA4ECC /* Auth */,
 				0830B5F32001254B0079F616 /* AppDelegate.swift */,
@@ -123,7 +127,6 @@
 				0830B5FA2001254B0079F616 /* Assets.xcassets */,
 				0830B5FC2001254B0079F616 /* LaunchScreen.storyboard */,
 				0830B5FF2001254B0079F616 /* Info.plist */,
-				089A181C2013D77400BA4ECC /* Auth0Settings.plist */,
 				089A18282015267500BA4ECC /* Auth0PKCETest-Bridging-Header.h */,
 			);
 			path = Auth0PKCETest;
@@ -296,6 +299,7 @@
 				089A181D2013D77400BA4ECC /* Auth0Settings.plist in Resources */,
 				0830B5FE2001254B0079F616 /* LaunchScreen.storyboard in Resources */,
 				0830B5FB2001254B0079F616 /* Assets.xcassets in Resources */,
+				0815DD68201D003D00049F32 /* Auth0SettingsTestApp.plist in Resources */,
 				0830B5F92001254B0079F616 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
