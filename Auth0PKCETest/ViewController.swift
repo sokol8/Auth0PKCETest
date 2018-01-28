@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func loginAction(_ sender: Any) {
+        clearLog()
         runAuthenticationFlow()
     }
     
@@ -64,13 +65,15 @@ extension ViewController {
         }
         
         authSafariSession = SFAuthenticationSession(url: url, callbackURLScheme: "om.works.Auth0PKCETest" )
-        { (callBack:URL?, error:Error?) in
+        { (callBackURL:URL?, error:Error?) in
             guard error == nil
                 else {
                     DDLogError("Authentication error: '\(error)'")
                     return
             }
-            DDLogDebug("got callBackURL: '\(callBack)'")
+            DDLogDebug("got callBackURL: '\(callBackURL)'")
+            
+            self.startAccessTokenRequest(url: callBackURL)
         }
         
         let startStatus = authSafariSession.start()
@@ -92,6 +95,19 @@ extension ViewController {
         if let request = authorizationURLRequest(withOAuthSettings: settings) {
             DDLogInfo("loading Web View with request: \(request)")
             authorizationWebView.load(request)
+        }
+    }
+    
+    func logLine(_ line: String) {
+        DispatchQueue.main.async {
+            //self.logTextView.text.appendingFormat("\(line)\n")
+            self.logTextView.text = self.logTextView.text + "\(line)\n"
+        }
+    }
+    
+    func clearLog() {
+        DispatchQueue.main.async {
+            self.logTextView.text = ""
         }
     }
 }
@@ -176,8 +192,8 @@ extension ViewController {
     func requestAuthorizationCode(withOAuthSettings settings : OAuthClientSettings) {
         DDLogInfo("Starting Authorization Code request")
         
-        //loadSafariWebView(withOAuthSettings: settings)
         loadSafariAuthenticationSession(withOAuthSettings: settings)
+        //loadSafariWebView(withOAuthSettings: settings)
         //loadWKWebView(withOAuthSettings: settings)
     }
     
@@ -236,6 +252,25 @@ extension ViewController {
         return nil
     }
     
+    @discardableResult
+    func startAccessTokenRequest(url: URL?) -> Bool {
+        
+        if let callBackURL = url {
+            if isOAuthRedirectURL(callBackURL) {
+                oauthSettings.authorizationCode = callbackCode(fromURL: callBackURL)
+                DDLogDebug("Recieved Authorization Code: '\(oauthSettings.authorizationCode!)'")
+                
+                self.logLine("--------------------")
+                self.logLine("Recieved Authorization Code: \(oauthSettings.authorizationCode!)")
+                self.logLine("--------------------")
+                
+                requestAccessToken(withOAuthSettings: oauthSettings)
+                return true
+            }
+        }
+        return false
+    }
+    
     func requestAccessToken(withOAuthSettings settings : OAuthClientSettings) {
         
         guard let urlRequest = accessTokenURLRequest(withOAuthSettings: settings)
@@ -261,6 +296,15 @@ extension ViewController {
                 }
                 
                 DDLogDebug("Access Token Response JSON: '\(json)'")
+                
+                self.logLine("--------------------")
+                self.logLine("Access Token Response")
+                self.logLine("--------------------")
+                if let jsonDict = json {
+                    for (key, value) in jsonDict {
+                        self.logLine("'\(key) : '\(value)'")
+                    }
+                }
             }
         })
         dataTask.resume()
@@ -302,14 +346,6 @@ extension ViewController {
 
 //MARK:- WKNavigationDelegate
 extension ViewController: WKNavigationDelegate {
-//    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-//        DDLogInfo("WebView Started loading")
-//    }
-//
-//    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-//        DDLogInfo("WebView finished loading")
-//    }
-    
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         handleError(error)
     }
@@ -339,14 +375,11 @@ extension ViewController: WKNavigationDelegate {
         
         //TODO: add support for error 'om.works.auth0pkcetest://mc-test.auth0.com/ios/om.works.Auth0PKCETest/callback?error=access_denied&error_description=Service%20not%20found%3A%20https%3A%2F%2Fapi-dev.metaboliccompass.com'
         // TO REPERODUCE - set audience to 'api-dev.metaboliccompass.com' with MC-TEST client
-        if isOAuthRedirectURL(url) {
-            oauthSettings.authorizationCode = callbackCode(fromURL: url)
-            DDLogDebug("Recieved Authorization Code: '\(oauthSettings.authorizationCode)'")
+        
+        let status = startAccessTokenRequest(url: url)
+        
+        if status {
             decisionHandler(.cancel)
-            
-            requestAccessToken(withOAuthSettings: oauthSettings)
-            
-            return
         }
         else {
             decisionHandler(.allow)
