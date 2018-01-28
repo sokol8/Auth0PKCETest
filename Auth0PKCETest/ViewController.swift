@@ -13,6 +13,8 @@ import SafariServices
 
 class ViewController: UIViewController {
     
+    let settingsPlistName = "Auth0SettingsTestApp"
+    
     var oauthSettings: OAuthClientSettings!
     var authorizationWebView: WKWebView!
     var safariViewController: SFSafariViewController!
@@ -54,14 +56,14 @@ extension ViewController {
     
     // NOTE: SFAuthenticationSession doesn't properly work with Auth0. Raises error "Safari cannot open the page because the address is invalid"
     // Errors is raised disregarding of whether we pass nil or valid redirectUri to callbackURLScheme
-    func loadAuthenticationSession(withOAuthSettings settings: OAuthClientSettings) {
+    func loadSafariAuthenticationSession(withOAuthSettings settings: OAuthClientSettings) {
         guard let url = authorizationURL(withOAuthSettings: settings)
             else {
                 DDLogError("Failed forming Authorization URL with settings: \(settings)")
                 return
         }
         
-        authSafariSession = SFAuthenticationSession(url: url, callbackURLScheme: nil)
+        authSafariSession = SFAuthenticationSession(url: url, callbackURLScheme: "om.works.Auth0PKCETest" )
         { (callBack:URL?, error:Error?) in
             guard error == nil
                 else {
@@ -102,8 +104,7 @@ extension ViewController {
         
         clearCookies()
         
-        //guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0Settings")
-        guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: "Auth0SettingsTestApp")
+        guard let settings = OAuthClientSettings(withBundle: Bundle.main, plistName: settingsPlistName)
             else {
                 DDLogError("Cannot read settings from Bundle. Bailing out from Authentication flow");
                 return
@@ -123,7 +124,6 @@ extension ViewController {
                 return
         }
         oauthSettings.codeChallenge = codeChallenge
-        
         DDLogInfo("Settings: \(oauthSettings)")
         
         requestAuthorizationCode(withOAuthSettings: oauthSettings)
@@ -176,8 +176,8 @@ extension ViewController {
     func requestAuthorizationCode(withOAuthSettings settings : OAuthClientSettings) {
         DDLogInfo("Starting Authorization Code request")
         
-        loadSafariWebView(withOAuthSettings: settings)
-        //loadAuthenticationSession(withOAuthSettings: settings)
+        //loadSafariWebView(withOAuthSettings: settings)
+        loadSafariAuthenticationSession(withOAuthSettings: settings)
         //loadWKWebView(withOAuthSettings: settings)
     }
     
