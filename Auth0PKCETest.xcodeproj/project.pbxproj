@@ -19,6 +19,8 @@
 		089A181D2013D77400BA4ECC /* Auth0Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 089A181C2013D77400BA4ECC /* Auth0Settings.plist */; };
 		089A181F2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */; };
 		089A182620150DF500BA4ECC /* OMDDLogCustomFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */; };
+		08CAA96E20223B030068438B /* ViewController+WKNavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CAA96D20223B030068438B /* ViewController+WKNavigationDelegate.swift */; };
+		08CAA97020223B6C0068438B /* ViewController+SFSafariViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CAA96F20223B6C0068438B /* ViewController+SFSafariViewControllerDelegate.swift */; };
 		61ADED7D1B873DE8BCDD0E3C /* Pods_Auth0PKCETest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0034BB34E7F3E30B9A4F757C /* Pods_Auth0PKCETest.framework */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +63,8 @@
 		089A181E2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDebugStringConvertibleExtension.swift; sourceTree = "<group>"; };
 		089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OMDDLogCustomFormatter.swift; sourceTree = "<group>"; };
 		089A18282015267500BA4ECC /* Auth0PKCETest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Auth0PKCETest-Bridging-Header.h"; sourceTree = "<group>"; };
+		08CAA96D20223B030068438B /* ViewController+WKNavigationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+WKNavigationDelegate.swift"; sourceTree = "<group>"; };
+		08CAA96F20223B6C0068438B /* ViewController+SFSafariViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+SFSafariViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		E218352899195896497F87C2 /* Pods-Auth0PKCETest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Auth0PKCETest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Auth0PKCETest/Pods-Auth0PKCETest.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,8 +119,8 @@
 		0830B5F22001254B0079F616 /* Auth0PKCETest */ = {
 			isa = PBXGroup;
 			children = (
-				089A181C2013D77400BA4ECC /* Auth0Settings.plist */,
-				0815DD67201D003D00049F32 /* Auth0SettingsTestApp.plist */,
+				08CAA96C20223AB60068438B /* OAuthSettingsPlists */,
+				08CAA96B20223A9E0068438B /* ViewControllerExtensions */,
 				089A182020150C2300BA4ECC /* DebugExtensions */,
 				089A18192013D0D000BA4ECC /* Auth */,
 				0830B5F32001254B0079F616 /* AppDelegate.swift */,
@@ -163,6 +167,24 @@
 				089A182520150DF500BA4ECC /* OMDDLogCustomFormatter.swift */,
 			);
 			path = DebugExtensions;
+			sourceTree = "<group>";
+		};
+		08CAA96B20223A9E0068438B /* ViewControllerExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				08CAA96D20223B030068438B /* ViewController+WKNavigationDelegate.swift */,
+				08CAA96F20223B6C0068438B /* ViewController+SFSafariViewControllerDelegate.swift */,
+			);
+			path = ViewControllerExtensions;
+			sourceTree = "<group>";
+		};
+		08CAA96C20223AB60068438B /* OAuthSettingsPlists */ = {
+			isa = PBXGroup;
+			children = (
+				089A181C2013D77400BA4ECC /* Auth0Settings.plist */,
+				0815DD67201D003D00049F32 /* Auth0SettingsTestApp.plist */,
+			);
+			path = OAuthSettingsPlists;
 			sourceTree = "<group>";
 		};
 		6977EFF63A11B7249ADEBB56 /* Frameworks */ = {
@@ -376,8 +398,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				089A182620150DF500BA4ECC /* OMDDLogCustomFormatter.swift in Sources */,
+				08CAA97020223B6C0068438B /* ViewController+SFSafariViewControllerDelegate.swift in Sources */,
 				0830B5F62001254B0079F616 /* ViewController.swift in Sources */,
 				089A181F2015070B00BA4ECC /* CustomDebugStringConvertibleExtension.swift in Sources */,
+				08CAA96E20223B030068438B /* ViewController+WKNavigationDelegate.swift in Sources */,
 				0815DD662019CE0400049F32 /* Data+PKCEEncoding.swift in Sources */,
 				0830B5F42001254B0079F616 /* AppDelegate.swift in Sources */,
 				089A181B2013D18B00BA4ECC /* OAuthClientSettings.swift in Sources */,
