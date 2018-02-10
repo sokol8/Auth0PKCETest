@@ -13,9 +13,10 @@ extension Data {
     func pkceEncodedString() -> String {
         return self.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "")
+            .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
             .trimmingCharacters(in: .whitespaces)
+
     }
 }
 
